@@ -1,6 +1,14 @@
 # Goals
 
-```00#000#0#``` (x9) wherein a zero represents a spot to be filled.
+## File formats
+
+- **INPUT:** ```00#000#0#``` (x9) wherein a zero represents a spot to be filled.
+- **OUTPUT:** (x9) {or Pygame fancy output in a grid}
+
+```
+|----------------------|
+|1 2 3 | 4 5 6 | 7 8 9 |
+```
 
 ## Requirements
 
@@ -9,9 +17,17 @@
 - Brute force the solution
   - Check vertically
   - Check horizontally
-  - Check 3x3 grid (dynamically)
+  - Check 3x3 grid (dynamically and hard coded)
+  - ***Optional: solve with dynamic methods***
 - Display result
-  - Output final solution with PyGame
+  - Output final solution with Pygame and save to a file
   - Identify and declare unsolvable puzzles
+  
+## Potential dynamic methods
 
-## Components
+### Prediction method #1
+
+- Each spot will be checked vertically, horizontally, and 3x3 for possible solutions *indepedently* of each other
+  - Any spots that must be filled in do so immediately and enter the "hard-coded" base, causing the previous step to repeat immediately
+  - *Repeat these steps until no new spaces are forced to be added*
+- 
