@@ -10,6 +10,8 @@
 |1 2 3 | 4 5 6 | 7 8 9 |
 ```
 
+- **3x3 groupings**: [0-2][0-2], [0-2][3-5], [0-2][6-8], [3-5][0-2], [3-5][3-5], [3-5][6-8], [6-8][0-2], [6-8][3-5], [6-8][6-8]
+
 ## Requirements
 
 - Reads puzzle from text file
@@ -27,13 +29,37 @@
 
 ### Prediction method #1
 
-- Each spot will be checked vertically, horizontally, and 3x3 for possible solutions *indepedently* of each other
+***Phase 1***
+
+- Each spot will be checked vertically, horizontally, and 3x3 for possible solutions *independently* of each other
   - Any spots that must be filled (only number in space) in do so immediately and enter the "hard-coded" base, causing the previous step to repeat immediately
   - *Repeat these steps until no new spaces are forced to be added*
 - Select, in this order, rows/columns/3x3
   - Check by number generally following the previous pattern (i.e. if any number appears once) "hard-code" the number and restart from step 1
-- ***{Specialized brute force}*** In top-left bottom-right order, select a valid number for a square
+
+***Phase 2***
+
+- ***{Specialized brute force}*** In reading order, select a valid number for a square
   - Check that square's column/row/3x3 for any numbers affected by this choice; **RECURSION AS NECESSARY**
   - After all filled, move to next spot
   - If fails, hop down recursion and try another valid number
   - Continue until all spaces are filled.
+
+## Layout
+
+- Request the file
+- Verify the file as valid (file.readlines())
+  - Ensure the file is 9x9 and numbers only
+  - Immediately invalidate if all numbers are 0
+  - Check for repeated numbers in row/column/3x3, invalidate if necessary
+  - PRINT AN ERROR MESSAGE
+- Load file into system (**TWO ARRAYS + predictions, please don't actually use these names**)
+  - **GridArray:** actual input of numbers (including 0) format [column][row]
+  - **PermArray:** a version of GridArray with permanent values, allowing for active modification and testing of GridArray with PermArray as a backup
+  - **Predictions:** overlaid onto the arrays, this contains dynamic predictions for each spot as an inner list (empty predictions read 0)
+- Run *Phase 1* of dynamic method using ```while True``` loop (with 2 inner loops) and *continue* statements
+  - any non-certain statements are loaded into ```Predictions```
+- Run *Phase 2* using recursion within ```for``` statements
+- FINISH:
+  - If the puzzle is solved, print using Pygame and ```Predictions``` AND save file by modifying source file name to ```LOCATION/FILE-solution.txt```
+  - If the puzzle is not solved, print message
