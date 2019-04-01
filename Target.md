@@ -53,10 +53,9 @@
   - Immediately invalidate if all numbers are 0
   - Check for repeated numbers in row/column/3x3, invalidate if necessary
   - PRINT AN ERROR MESSAGE
-- Load file into system (**TWO ARRAYS + predictions, please don't actually use these names**)
-  - **GridArray:** actual input of numbers (including 0) format [column][row]
-  - **PermArray:** a version of GridArray with permanent values, allowing for active modification and testing of GridArray with PermArray as a backup
-  - **Predictions:** overlaid onto the arrays, this contains dynamic predictions for each spot as an inner list (empty predictions read 0)
+- Load file into system (**ARRAY + predictions, please don't actually use these names**)
+  - **grid:** actual input of numbers (including 0) format [column][row], where second value is boolean for locked
+  - **predictions:** overlaid onto the arrays, this contains dynamic predictions for each spot as an inner list (empty predictions read 0)
 - Run *Phase 1* of dynamic method using ```while True``` loop (with 2 inner loops) and *continue* statements
   - any non-certain statements are loaded into ```Predictions```
 - Run *Phase 2* using recursion within ```for``` statements
