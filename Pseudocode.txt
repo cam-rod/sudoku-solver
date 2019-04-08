@@ -1,0 +1,48 @@
+# Cameron Rodriguez
+# Date
+# This program will dynamically solve a sudoku grid.
+
+Initialize grid as an array
+
+Define function inner_grid(y, x, *grid)
+    Initialize inner_values as an array
+    Initialize inner_x and inner_y as integers
+
+    Calculate inner_x as x % 3
+    Calculate inner_y as y % 3
+
+    If inner_y is 0 and inner_x is 0, append the values of grid spaces up to 2 spaces down and 2 spaces right to inner_values
+    Else if inner_y is 0 and inner_x is 1, append the values of grid spaces up to 2 spaces down and 1 space left and right to inner_values
+    Else if inner_y is 0 and inner_x is 2, append the values of grid spaces up to 2 spaces down and 2 spaces left to inner_values
+    Else if inner_y is 1 and inner_x is 0, append the values of grid spaces up to 1 space up and down and 2 spaces right to inner_values
+    Else if inner_y is 1 and inner_x is 1, append the values of grid spaces up to 1 space up and down and 1 space left and right to inner_values
+    Else if inner_y is 1 and inner_x is 2, append the values of grid spaces up to 1 space up and down and 2 spaces left to inner_values
+    Else if inner_y is 2 and inner_x is 0, append the values of grid spaces up to 2 spaces up and 2 spaces right to inner_values
+    Else if inner_y is 2 and inner_x is 1, append the values of grid spaces up to 2 spaces up and 1 space left and right to inner_values
+    Else if inner_y is 2 and inner_x is 2, append the values of grid spaces up to 2 spaces up and 2 spaces left to inner_values
+
+    Return inner_values
+
+
+Define function load_game()
+    Initialize game_text and inner as an array
+
+    Request the filename from the user
+    Open the file from the indicated location in "r" mode as game_raw
+    Read game_raw, split at newline characters, into the 2D array game_text
+    Split game_text by characters into the 3D array grid
+
+    For y in grid
+        For x in grid[i] 
+            Append 1 to grid[y][x] if grid[y][x][0] is a non-zero number, or append 0 if it is zero, or return 'invalid' if it is not a number
+   
+    If all characters in game_text are 0, restart the loop
+    If the length of grid is not 9, restart the loop
+    If the length of grid[0] is not 9, restart the loop
+    
+    For y in grid
+        For x in grid[i]
+            return 'repeat' if the value of grid[y][x][0] appears in the same row or column
+            return 'repeat' if the value of grid[y][x][0] appears in the 3x3 grid list returned by inner_grid(y, x, grid)
+
+    Return grid
