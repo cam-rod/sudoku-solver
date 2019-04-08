@@ -2,9 +2,11 @@
 # Date
 # This program will dynamically solve a sudoku grid.
 
-Initialize grid and predictions as arrays
+Initialize grid and temp_predictions as arrays
+Initialize predictions as a 3D array, with 9 empty elements within each of 9 empty elements
+Initialize y and x as integers
 
-Define function inner_grid(y, x, *grid)
+Define function inner_grid(y, x, grid)
     Initialize inner_values as an array
     Initialize inner_x and inner_y as integers
 
@@ -47,10 +49,18 @@ Define function load_game()
 
     Return grid
 
-Define mandatory_values()
-    While True
-        For y in grid
-            For x in grid[y]
-                Append any value not found in grid[y] to predictions[y][x]
-
-                ### USE set(a list) to remove duplicates
+Define mandatory_values(grid)
+    For y in grid
+        For x in grid[y]
+            Append any non-zero value not found in the same row to temp_predictions and to predictions[y][x]
+            If there is one number in temp_predictions, set that value to grid[y][x][0], set grid[y][x] to 1, and run recursion on mandatory_values(grid); otherwise clear temp_predictions
+            
+            Append any non-zero value not found in the same column to temp_predictions
+            If there is one number in temp_predictions, set that value to grid[y][x][0], set grid[y][x] to 1, and run recursion on mandatory_values(grid); otherwise clear temp_predictions
+            
+            Append any non-zero value not found in the 3x3 grid from inner_grid(y, x, grid) to temp_predictions
+            If there is one number in temp_predictions, set that value to grid[y][x][0], set grid[y][x] to 1, and run recursion on mandatory_values(grid); otherwise clear temp_predictions
+    
+    ### Determine all predictions here based on previous section
+    
+### USE set(list) to remove duplicates
