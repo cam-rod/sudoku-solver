@@ -2,14 +2,14 @@
 # Date
 # This program will dynamically solve a sudoku grid.
 
-Initialize grid as an array
+Initialize grid and predictions as arrays
 
 Define function inner_grid(y, x, *grid)
     Initialize inner_values as an array
     Initialize inner_x and inner_y as integers
 
-    Calculate inner_x as x % 3
     Calculate inner_y as y % 3
+    Calculate inner_x as x % 3
 
     If inner_y is 0 and inner_x is 0, append the values of grid spaces up to 2 spaces down and 2 spaces right to inner_values
     Else if inner_y is 0 and inner_x is 1, append the values of grid spaces up to 2 spaces down and 1 space left and right to inner_values
@@ -33,7 +33,7 @@ Define function load_game()
     Split game_text by characters into the 3D array grid
 
     For y in grid
-        For x in grid[i] 
+        For x in grid[y] 
             Append 1 to grid[y][x] if grid[y][x][0] is a non-zero number, or append 0 if it is zero, or return 'invalid' if it is not a number
    
     If all characters in game_text are 0, restart the loop
@@ -41,8 +41,16 @@ Define function load_game()
     If the length of grid[0] is not 9, restart the loop
     
     For y in grid
-        For x in grid[i]
-            return 'repeat' if the value of grid[y][x][0] appears in the same row or column
+        For x in grid[y]
+            return 'repeat' if the value of grid[y][x][0] appears in the same row or column, unless the value is 0
             return 'repeat' if the value of grid[y][x][0] appears in the 3x3 grid list returned by inner_grid(y, x, grid)
 
     Return grid
+
+Define mandatory_values()
+    While True
+        For y in grid
+            For x in grid[y]
+                Append any value not found in grid[y] to predictions[y][x]
+
+                ### USE set(a list) to remove duplicates
