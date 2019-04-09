@@ -26,7 +26,7 @@ Define function inner_grid(y, x, grid)
 
     Return inner_values
 
-Define clear_predictions()
+Define clear_predictions(predictions)
     For y in length of predictions
         For x in length of predictions[y]
             Set predictions[y][x][0] to an array
