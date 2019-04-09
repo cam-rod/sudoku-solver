@@ -28,6 +28,7 @@ y = 0
 x = 0
 grid_location = ''
 
+# This function returns the value of the 8 other spaces in the same 3x3 inner grid as the indicated character
 def inner_grid(y, x, grid):
     inner_values = []
     inner_y = 0
@@ -58,3 +59,4 @@ def inner_grid(y, x, grid):
     # End if inner_y
     
     return inner_values
+# End inner_grid
