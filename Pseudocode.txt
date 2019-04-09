@@ -25,6 +25,12 @@ Define function inner_grid(y, x, grid)
 
     Return inner_values
 
+Define clear_predictions()
+    For y in predictions
+        For x in predictions[y]
+            Set predictions[y][x][0] to an array
+
+    Return predictions
 
 Define function load_game()
     Initialize game_text and inner as an array
@@ -53,14 +59,33 @@ Define mandatory_values(grid)
     For y in grid
         For x in grid[y]
             Append any non-zero value not found in the same row to temp_predictions and to predictions[y][x]
-            If there is one number in temp_predictions, set that value to grid[y][x][0], set grid[y][x] to 1, and run recursion on mandatory_values(grid); otherwise clear temp_predictions
+            If there is one number in temp_predictions, set that value permanently to grid[y][x], run clear_predictions(predictions), and run recursion on mandatory_values(grid)
+            Else clear temp_predictions
             
-            Append any non-zero value not found in the same column to temp_predictions
-            If there is one number in temp_predictions, set that value to grid[y][x][0], set grid[y][x] to 1, and run recursion on mandatory_values(grid); otherwise clear temp_predictions
+            Append any non-zero value not found in the same column to temp_predictions and to predictions[y][x]
+            If there is one number in temp_predictions, set that value permanently to grid[y][x], run clear_predictions(predictions), and run recursion on mandatory_values(grid)
+            Else clear temp_predictions
             
-            Append any non-zero value not found in the 3x3 grid from inner_grid(y, x, grid) to temp_predictions
-            If there is one number in temp_predictions, set that value to grid[y][x][0], set grid[y][x] to 1, and run recursion on mandatory_values(grid); otherwise clear temp_predictions
+            Append any non-zero value not found in the 3x3 grid from inner_grid(y, x, grid) to temp_predictions and to predictions[y][x]
+            If there is one number in temp_predictions, set that value permanently to grid[y][x], run clear_predictions(predictions), and run recursion on mandatory_values(grid)
+            Else clear temp_predictions
+
+            Remove duplicates with set(predictions[y][x])
+      
+    For each row in grid
+        Append the first value in each element of the row to temp_predictions
+        If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, run clear_predictions(predictions), and run recursion on mandatory_values(grid)
+        Else continue
+
+    For each column in grid
+        Append the first value in each element of the column to temp_predictions
+        If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, run clear_predictions(predictions), and run recursion on mandatory_values(grid)
+        Else continue
     
-    ### Determine all predictions here based on previous section
-    
-### USE set(list) to remove duplicates
+    For y in range(3)
+        For x in range(3)
+            Set temp predictions to the values returned by inner_grid(y, x, grid)
+            If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, run clear_predictions(predictions), and run recursion on mandatory_values(grid)
+            Else continue
+
+    Return grid
