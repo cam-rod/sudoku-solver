@@ -5,6 +5,7 @@
 Initialize grid, temp_predictions, and result as arrays
 Initialize predictions as a 3D array, with 9 empty elements within each of 9 empty elements
 Initialize y and x as integers
+Initialize grid_location as a string
 
 Define function inner_grid(y, x, grid)
     Initialize inner_values as an array
@@ -32,28 +33,29 @@ Define clear_predictions()
 
     Return predictions
 
-Define function load_game()
-    Initialize game_text and inner as an array
+Define function load_grid()
+    Initialize grid_text and inner as an array
 
-    Request the filename from the user
-    Open the file from the indicated location in "r" mode as game_raw
-    Read game_raw, split at newline characters, into the 2D array game_text
-    Split game_text by characters into the 3D array grid
+    Request the filename from the user as grid_location
+    Open the file from grid_location in "r" mode as grid_raw
+    Read grid_raw, split at newline characters, into the 2D array grid_text
+    Split grid_text by characters into the 3D array grid
+    Close grid_raw
 
     For y in length of grid
         For x in length of grid[y] 
             Append 1 to grid[y][x] if grid[y][x][0] is a non-zero number, or append 0 if it is zero, or return 'invalid' if it is not a number
    
-    If all characters in game_text are 0, restart the loop
+    If all characters in grid_text are 0, restart the loop
     If the length of grid is not 9, restart the loop
     If the length of grid[0] is not 9, restart the loop
     
     For y in length of grid
         For x in length of grid[y]
-            return 'repeat' if the value of grid[y][x][0] appears in the same row or column, unless the value is 0
-            return 'repeat' if the value of grid[y][x][0] appears in the 3x3 grid list returned by inner_grid(y, x, grid)
+            return False if the value of grid[y][x][0] appears in the same row or column, unless the value is 0
+            return False if the value of grid[y][x][0] appears in the 3x3 grid list returned by inner_grid(y, x, grid)
 
-    Return grid
+    Return [grid_location, grid]
 
 Define mandatory_values(grid)
     For y in length of grid
@@ -112,9 +114,35 @@ Define fill_grid(grid, predictions)
     
     Return [True, grid]
 
-Set grid to the returned value of load_game()
+Define deliver_result(successful, *grid_location)
+    If successful is True
+        Set grid_location to grid_location[:-4]+'_solution'+grid_location[-4:]
+        Open the file at grid_location in 'w' mode as solution_grid
+        For y in length of grid
+            For x in length of grid[y]
+                Write the casted string of grid[y][x][0] to solution_grid
+            Write '\n' if y is not 8
+        
+        Close solution_grid
+
+        Initialize a centered Tkinter window as result
+
+        For y in length of grid
+            For x in length of grid[y]
+                Add a tkinter grid widget in column=x and row=y with string of grid[y][x][0] inside
+
+        Add a grid widget stretched across the bottom row with the text 'Solution saved to {}.'.format(grid_location)
+
+        Launch the window result
+
+    Else print 'The sudoku puzzle inputted cannot be solved.'
+
+Set grid_location, grid to the returned value of load_grid()
+
+If grid is False, call deliver_result(False)
+
 Set grid, predictions to the returned value of mandatory_values(grid)
 Set result to the returned value of fill_grid(grid, predictions)
 
-If result is True, set grid to result[1] and call print_result(True)
-Else call print_result(False)
+If result[0] is True, set grid to result[1] and call deliver_result(True, grid_location)
+Else call deliver_result(False)
