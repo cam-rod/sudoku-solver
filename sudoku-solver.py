@@ -214,5 +214,11 @@ def mandatory_values(grid, predictions):
         
         temp_predictions = ''.join(temp_predictions)     
         for i in range(1, 10):
-            if len(re.findall(i, temp_predictions)) == 1: # Predicted value found only once in row
-                
+            if len(re.findall(i, temp_predictions)) == 1:
+                for x in range(9):
+                    for j in predictions[y][x]:
+                        if j == i:
+                            grid[y][x] = [i, 1]
+                            predictions = predictions=[[[] for i in range(9)] for j in range(9)]
+                            grid, predictions = mandatory_values(grid, predictions)
+                            # Program has permanently set number and recursed
