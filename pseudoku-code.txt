@@ -3,15 +3,14 @@
 # This program will dynamically solve a sudoku grid.
 
 Initialize grid and predictions as a 3D array, with 9 empty elements within each of 9 empty elements
-Initialize temp_predictions and result as arrays
+Initialize temp_predictions, result, and values as arrays
 Initialize y and x as integers
 Initialize grid_location as a string
 
 Define function check(region, y, x, grid)
-    Initialize values as an array
     Initialize inner_x and inner_y as integers
     
-    If region is 'grid'
+    If region is '3x3'
         Calculate inner_y as y % 3
         Calculate inner_x as x % 3
 
