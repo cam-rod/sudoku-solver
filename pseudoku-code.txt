@@ -7,46 +7,58 @@ Initialize temp_predictions and result as arrays
 Initialize y and x as integers
 Initialize grid_location as a string
 
-Define function inner_grid(y, x, grid)
-    Initialize inner_values as an array
+Define function check(region, y, x, grid)
+    Initialize values as an array
     Initialize inner_x and inner_y as integers
+    
+    If region is 'grid'
+        Calculate inner_y as y % 3
+        Calculate inner_x as x % 3
 
-    Calculate inner_y as y % 3
-    Calculate inner_x as x % 3
+        If inner_y is 0 and inner_x is 0, append the values of grid spaces up to 2 spaces down and 2 spaces right to values
+        Else if inner_y is 0 and inner_x is 1, append the values of grid spaces up to 2 spaces down and 1 space left and right to values
+        Else if inner_y is 0 and inner_x is 2, append the values of grid spaces up to 2 spaces down and 2 spaces left to values
+        Else if inner_y is 1 and inner_x is 0, append the values of grid spaces up to 1 space up and down and 2 spaces right to values
+        Else if inner_y is 1 and inner_x is 1, append the values of grid spaces up to 1 space up and down and 1 space left and right to values
+        Else if inner_y is 1 and inner_x is 2, append the values of grid spaces up to 1 space up and down and 2 spaces left to values
+        Else if inner_y is 2 and inner_x is 0, append the values of grid spaces up to 2 spaces up and 2 spaces right to values
+        Else if inner_y is 2 and inner_x is 1, append the values of grid spaces up to 2 spaces up and 1 space left and right to values
+        Else if inner_y is 2 and inner_x is 2, append the values of grid spaces up to 2 spaces up and 2 spaces left to values
 
-    If inner_y is 0 and inner_x is 0, append the values of grid spaces up to 2 spaces down and 2 spaces right to inner_values
-    Else if inner_y is 0 and inner_x is 1, append the values of grid spaces up to 2 spaces down and 1 space left and right to inner_values
-    Else if inner_y is 0 and inner_x is 2, append the values of grid spaces up to 2 spaces down and 2 spaces left to inner_values
-    Else if inner_y is 1 and inner_x is 0, append the values of grid spaces up to 1 space up and down and 2 spaces right to inner_values
-    Else if inner_y is 1 and inner_x is 1, append the values of grid spaces up to 1 space up and down and 1 space left and right to inner_values
-    Else if inner_y is 1 and inner_x is 2, append the values of grid spaces up to 1 space up and down and 2 spaces left to inner_values
-    Else if inner_y is 2 and inner_x is 0, append the values of grid spaces up to 2 spaces up and 2 spaces right to inner_values
-    Else if inner_y is 2 and inner_x is 1, append the values of grid spaces up to 2 spaces up and 1 space left and right to inner_values
-    Else if inner_y is 2 and inner_x is 2, append the values of grid spaces up to 2 spaces up and 2 spaces left to inner_values
+        Return values
 
-    Return inner_values
+    If region is 'row'
+        Append all numbers in the row to values
+        Remove values[x]
+        Return values
+
+    If region is 'column'
+        Append all numbers in the column to values
+        Remove values[y]
+        Return values
 
 Define function load_grid()
-    Initialize grid_text and inner as an array
+    Initialize grid_text as an array
 
     Request the filename from the user as grid_location
     Open the file from grid_location in "r" mode as grid_raw
-    Read grid_raw, split at newline characters, into the 2D array grid_text
-    Split grid_text by characters into the 3D array grid
+    Read grid_raw, split at newline characters, into the array grid_text
     Close grid_raw
+
+    If the length of grid_text is not 9, return False
+    If the length of each line of grid_text is not 9, return False
+    If all characters in grid_text are 0, return False
+
+    Split grid_text by characters into the 3D array grid
 
     For y in length of grid
         For x in length of grid[y] 
             Append 1 to grid[y][x] if grid[y][x][0] is a non-zero number, or append 0 if it is zero, or return 'invalid' if it is not a number
-   
-    If all characters in grid_text are 0, restart the loop
-    If the length of grid is not 9, restart the loop
-    If the length of grid[0] is not 9, restart the loop
     
     For y in length of grid
         For x in length of grid[y]
             return False if the value of grid[y][x][0] appears in the same row or column, unless the value is 0
-            return False if the value of grid[y][x][0] appears in the 3x3 grid list returned by inner_grid(y, x, grid)
+            return False if the value of grid[y][x][0] appears in the 3x3 grid list returned by check('grid', y, x, grid)
 
     Return [grid_location, grid]
 
@@ -61,7 +73,7 @@ Define mandatory_values(grid)
             If there is one number in temp_predictions, set that value permanently to grid[y][x], reset predictions, and run recursion on mandatory_values(grid, predictions)
             Else clear temp_predictions
             
-            Append any non-zero value not found in the 3x3 grid from inner_grid(y, x, grid) to temp_predictions and to predictions[y][x]
+            Append any non-zero value not found in the 3x3 grid from check('grid', y, x, grid) to temp_predictions and to predictions[y][x]
             If there is one number in temp_predictions, set that value permanently to grid[y][x], reset predictions, and run recursion on mandatory_values(grid, predictions)
             Else clear temp_predictions
 
@@ -79,7 +91,7 @@ Define mandatory_values(grid)
     
     For y in range(3)
         For x in range(3)
-            Set temp_predictions to the values returned by inner_grid(y, x, grid)
+            Set temp_predictions to the values returned by check('grid', y, x, grid)
             If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, reset predictions, and run recursion on mandatory_values(grid, predictions)
             Else continue
 
@@ -96,7 +108,7 @@ Define fill_grid(grid, predictions)
                 Set grid[y][x][0] to predictions[y][x][p]
                 If the value of grid[y][x][0] is repeated in the row, continue loop
                 If the value of grid[y][x][0] is repeated in the column, continue loop
-                If the value of grid[y][x][0] is repeated in its 3x3 surrounding grid as returned by inner_grid(y, x, grid), continue loop
+                If the value of grid[y][x][0] is repeated in its 3x3 surrounding grid as returned by check('grid', y, x, grid), continue loop
                 
                 Set final_grid to the returned value of fill_grid(grid, predictions)
 
