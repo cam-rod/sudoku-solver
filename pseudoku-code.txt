@@ -61,7 +61,7 @@ Define function load_grid()
 
     Return [grid_location, grid]
 
-Define mandatory_values(grid)
+Define mandatory_values(grid, predictions)
     For y in length of grid
         For x in length of grid[y]
             Append any non-zero value not found in the same row to temp_predictions and to predictions[y][x]
@@ -79,18 +79,18 @@ Define mandatory_values(grid)
             Remove duplicates with set(predictions[y][x])
       
     For each row in grid
-        Append the first value in each element of the row to temp_predictions
+        Append the predictions of each element of the row to temp_predictions
         If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, reset predictions, and run recursion on mandatory_values(grid, predictions)
         Else continue
 
     For each column in grid
-        Append the first value in each element of the column to temp_predictions
+        Append the predictions in each element of the column to temp_predictions
         If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, reset predictions, and run recursion on mandatory_values(grid, predictions)
         Else continue
     
     For y in range(3)
         For x in range(3)
-            Set temp_predictions to the values returned by check('grid', y, x, grid)
+            Append the predictions in each element of the 3x3 grid to temp_predictions
             If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, reset predictions, and run recursion on mandatory_values(grid, predictions)
             Else continue
 
