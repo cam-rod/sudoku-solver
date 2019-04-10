@@ -7,7 +7,6 @@ Data Dictionary
 
 grid: LIST: stores sudoku grid in 3D array; in third dimension, the first element is the number and the second indicates permanent
 predictions: LIST: a 3D array parallel to grid; the third dimension is a list of potential values for each spot in grid
-temp_predictions: LIST: temporarily stores a list of all values not found in a row/column/3x3 inner grid
 result:  LIST: stores returned value of fill_grid() with confirmation of puzzle solution and the updated grid if so
 y: INT: indicates the row the program is checking from the top
 x: INT: indicates the column the program is checking from the left
@@ -18,6 +17,7 @@ inner_y: INT: indicates the row of grid[y][x] relative to its 3x3 grid
 inner_x: INT: indicates the column of grid[y][x] relative to its 3x3 grid
 grid_raw: FILE: the opened file of the source puzzle
 grid_text: LIST: list of sudoku puzzle rows
+temp_predictions: LIST: temporarily stores a list of all values not found in a row/column/3x3 inner grid
 """
 
 import re # Used to verify the puzzle as valid
@@ -26,7 +26,6 @@ import re # Used to verify the puzzle as valid
 grid = [[[] for i in range(9)] for j in range(9)]
 predictions=[[[] for i in range(9)] for j in range(9)]
 
-temp_predictions = []
 result = []
 values = []
 y = 0
@@ -139,3 +138,81 @@ def load_grid():
 
     return [grid_location, grid]
 # End load_grid
+
+# This function fills in spaces that are required to be filled in based on the only available values for a spot
+# grid: LIST: the 3D array storing the sudoku puzzle
+# Returns a list containing the updated grid and predictions
+def mandatory_values(grid, predictions):
+    temp_predictions = []
+    
+    # Check if any row/column/3x3 grid is only missing one number, and insert it permanently if so
+    for y in len(grid):
+        for x in len(grid[y]):
+            # Check row
+            values = check('row', y, x, grid)
+            for i in range(1, 10):
+                if i not in values:
+                    temp_predictions.append(i)
+                    predictions[y][x].append(i)
+                # End if i
+            # End for i
+            
+            if len(temp_predictions) == 1:
+                grid[y][x] = [temp_predictions[0], 1]
+                predictions = predictions=[[[] for i in range(9)] for j in range(9)]
+                grid, predictions = mandatory_values(grid, predictions)
+            else:
+                temp_predictions = []
+            # End if len(temp_predictions)
+            
+            # Check column
+            values = check('column', y, x, grid)
+            for i in range(1, 10):
+                if i not in values:
+                    temp_predictions.append(i)
+                    predictions[y][x].append(i)
+                # End if i
+            # End for i
+            
+            if len(temp_predictions) == 1:
+                grid[y][x] = [temp_predictions[0], 1]
+                predictions = predictions=[[[] for i in range(9)] for j in range(9)]
+                grid, predictions = mandatory_values(grid, predictions)
+            else:
+                temp_predictions = []
+            # End if len(temp_predictions)
+            
+            # Check 3x3 grid
+            values = check('3x3', y, x, grid)
+            for i in range(1, 10):
+                if i not in values:
+                    temp_predictions.append(i)
+                    predictions[y][x].append(i)
+                # End if i
+            # End for i
+            
+            if len(temp_predictions) == 1:
+                grid[y][x] = [temp_predictions[0], 1]
+                predictions = predictions=[[[] for i in range(9)] for j in range(9)]
+                grid, predictions = mandatory_values(grid, predictions)
+            else:
+                temp_predictions = []
+            # End if len(temp_predictions)
+            
+            predictions[y][x] = list(set(predictions[y][x])) # Remove duplicate predictions
+        # End for x
+    # End for y
+    
+    # If any predicted number only appears once in a row/column/3x3 grid, permanently set it
+    # Check row
+    for y in range(9):
+        for x in range(9):
+            for i in predictions[y][x]:
+                temp_predictions.append(i)
+            # End for i
+        # End for x
+        
+        temp_predictions = ''.join(temp_predictions)     
+        for i in range(1, 10):
+            if len(re.findall(i, temp_predictions)) == 1: # Predicted value found only once in row
+                
