@@ -61,7 +61,7 @@ Define function load_grid()
 
     Return [grid_location, grid]
 
-Define mandatory_predictions(grid, predictions, successful, type)
+Define mandatory_predictions(grid, predictions, successful, form)
     Append the predictions of each element of the row/column to temp_predictions (decided by type)
     If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, reset predictions, and run recursion on mandatory_values(grid, predictions)
     Else continue
