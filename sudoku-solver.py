@@ -205,6 +205,7 @@ def mandatory_predictions(grid, predictions, successful, form):
     # End for i
     
     return [grid, predictions, successful]
+# End mandatory_predictions
     
 # This function fills in spaces that are required to be filled in based on the only available values for a spot
 # grid: LIST: the 3D array storing the sudoku puzzle
