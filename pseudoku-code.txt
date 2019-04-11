@@ -61,7 +61,15 @@ Define function load_grid()
 
     Return [grid_location, grid]
 
-Define mandatory_values(grid, predictions)
+Define mandatory_predictions(grid, predictions, successful, type)
+    Append the predictions of each element of the row/column to temp_predictions (decided by type)
+    If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, reset predictions, and run recursion on mandatory_values(grid, predictions)
+    Else continue
+    Break program if successful is True
+    
+    return [grid, predictions, successful]
+
+Define mandatory_values(grid, predictions, successful)
     For y in length of grid
         For x in length of grid[y]
             Append any non-zero value not found in the same row to temp_predictions and to predictions[y][x]
@@ -79,22 +87,12 @@ Define mandatory_values(grid, predictions)
             Remove duplicates with set(predictions[y][x])
       
     For each row in grid
-        Append the predictions of each element of the row to temp_predictions
-        If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, reset predictions, and run recursion on mandatory_values(grid, predictions)
-        Else continue
+        Call mandatory_predictions(grid, predictions, successful, 'row')
 
     For each column in grid
-        Append the predictions in each element of the column to temp_predictions
-        If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, reset predictions, and run recursion on mandatory_values(grid, predictions)
-        Else continue
+        Call mandatory_predictions(grid, predictions, successful, 'column')
     
-    For y in range(3)
-        For x in range(3)
-            Append the predictions in each element of the 3x3 grid to temp_predictions
-            If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, reset predictions, and run recursion on mandatory_values(grid, predictions)
-            Else continue
-
-    Return [grid, predictions]
+    Return [grid, predictions, True]
 
 Define fill_grid(grid, predictions)
     Initialize final_grid as an array
