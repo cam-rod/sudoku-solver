@@ -18,7 +18,7 @@ inner_x: INT: indicates the column of grid[y][x] relative to its 3x3 grid
 grid_raw: FILE: the opened file of the source puzzle
 grid_text: LIST: list of sudoku puzzle rows
 temp_predictions: LIST: temporarily stores a list of all values not found in a row/column/3x3 inner grid
-successful: BOOL: indicates if all mandatory values in rows/column are saved
+successful: BOOL: indicates if all mandatory values in rows/column are saved, or if puzzle was successfully solved
 final_grid: LIST: stores a boolean if the puzzle has been successfully solved, and the grid itself if True
 """
 
@@ -331,3 +331,29 @@ def fill_grid(grid, predictions):
     # Returns True and grid if all spots filled successfully
     return [True, grid]
 # End fill_grid
+
+# This function uses variable successful to either display a solved puzzle and save it, or deliver an error message
+def deliver_result():
+    pass
+
+# Request and load the puzzle into the solver
+grid = load_grid()
+
+if grid == False:
+    deliver_result()
+else:
+    grid_location, grid = grid
+# End if grid
+
+# Fill in spaces that cannot have other values
+grid, predictions = mandatory_values(grid, predictions, successful)
+
+# Fill in all other spaces
+result = fill_grid(grid, predictions)
+
+# Deliver solution or failure message
+if result[0] == True:
+    successful, grid = result
+    deliver_result()
+else:
+    deliver_result()
