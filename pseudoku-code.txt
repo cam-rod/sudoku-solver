@@ -102,10 +102,11 @@ Define fill_grid(grid, predictions)
             Continue if grid[y][x][0] is not 0
 
             For p in length of predictions[y][x]
-                Set grid[y][x][0] to predictions[y][x][p]
                 If the value of grid[y][x][0] is repeated in the row, continue loop
                 If the value of grid[y][x][0] is repeated in the column, continue loop
                 If the value of grid[y][x][0] is repeated in its 3x3 surrounding grid as returned by check('grid', y, x, grid), continue loop
+                Set grid[y][x][0] to predictions[y][x][p]
+
                 
                 Set final_grid to the returned value of fill_grid(grid, predictions)
 
