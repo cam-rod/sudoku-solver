@@ -354,6 +354,6 @@ result = fill_grid(grid, predictions)
 # Deliver solution or failure message
 if result[0] == True:
     successful, grid = result
-    deliver_result()
-else:
-    deliver_result()
+# End if result[0]
+
+deliver_result()
