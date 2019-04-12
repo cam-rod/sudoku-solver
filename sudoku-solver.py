@@ -19,6 +19,7 @@ grid_raw: FILE: the opened file of the source puzzle
 grid_text: LIST: list of sudoku puzzle rows
 temp_predictions: LIST: temporarily stores a list of all values not found in a row/column/3x3 inner grid
 successful: BOOL: indicates if all mandatory values in rows/column are saved
+final_grid: LIST: stores a boolean if the puzzle has been successfully solved, and the grid itself if True
 """
 
 import re # Used to verify the puzzle as valid
@@ -141,7 +142,7 @@ def load_grid():
     return [grid_location, grid]
 # End load_grid
 
-# This function fills spaces where a prediction is the only one in its row or column.
+# This function recursively fills spaces where a prediction is the only one in its row or column.
 # grid: LIST: the 3D array storing the sudoku puzzle
 # predictions: LIST: parallel to array; stores potential values for grid
 # successful: BOOL: indicates if all mandatory values in rows/column are saved
@@ -151,6 +152,7 @@ def mandatory_predictions(grid, predictions, successful, form):
     temp_predictions = []
 
     for i in range(9):
+        # Add all predictions to a list
         for j in range(9):
             if form == 'row':
                 for k in predictions[i][j]:
@@ -163,6 +165,7 @@ def mandatory_predictions(grid, predictions, successful, form):
             # End if form
         # End for j
         
+        # Chedck if a number is only predicted once in row/column, and add if so
         temp_predictions = ''.join(temp_predictions)     
         for k in range(1, 10):
             if len(re.findall(k, temp_predictions)) == 1:
@@ -285,3 +288,46 @@ def mandatory_values(grid, predictions, successful):
     
     return [grid, predictions, True]
 # End mandatory_values
+
+# This function recursively fills the remaining spaces in the puzzle based on predictions
+# grid: LIST: the 3D array storing the sudoku puzzle
+# predictions: LIST: parallel to array; stores potential values for grid
+def fill_grid(grid, predictions):
+    final_grid = []
+    
+    for y in len(grid):
+        for x in len(grid[y]):
+            # Skip if permanent number or previously guesses
+            if grid[y][x][1] == 1 or grid[y][x][0] <> 0:
+                continue
+            # End if grid[y][x][1]
+            
+            # Test the validity of each prediction, and set value if so
+            for i in predictions[y][x]:
+                if i in check('row', y, x, grid):
+                    continue
+                elif i in check('column', y, x, grid):
+                    continue
+                elif i in check ('3x3', y, x, grid):
+                    continue
+                else:
+                    grid[y][x][0] = i
+                    
+                    final_grid = fill_grid(grid, predictions)
+                    if final_grid[0] is True:
+                        # The puzzle is solved successfully
+                        return final_grid
+                    else:
+                        continue
+                    # End if final_grid
+                # End if i
+            # End for i
+            
+            # Returns False if the program cannot successfully enter a value
+            return [False]
+        # End for x
+    # End for y
+    
+    # Returns True and grid if all spots filled successfully
+    return [True, grid]
+# End fill_grid
