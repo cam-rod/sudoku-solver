@@ -148,6 +148,8 @@ def load_grid():
 # form: STR: indicates whether to check rows or columns
 # Returns a list containing the updated grid, predictions, and successful
 def mandatory_predictions(grid, predictions, successful, form):
+    temp_predictions = []
+
     for i in range(9):
         for j in range(9):
             if form == 'row':
@@ -230,7 +232,7 @@ def mandatory_values(grid, predictions, successful):
             if len(temp_predictions) == 1:
                 grid[y][x] = [temp_predictions[0], 1]
                 predictions = predictions=[[[] for i in range(9)] for j in range(9)]
-                grid, predictions = mandatory_values(grid, predictions)
+                grid, predictions, successful = mandatory_values(grid, predictions, successful)
             else:
                 temp_predictions = []
             # End if len(temp_predictions)
@@ -247,7 +249,7 @@ def mandatory_values(grid, predictions, successful):
             if len(temp_predictions) == 1:
                 grid[y][x] = [temp_predictions[0], 1]
                 predictions = predictions=[[[] for i in range(9)] for j in range(9)]
-                grid, predictions = mandatory_values(grid, predictions)
+                grid, predictions, successful = mandatory_values(grid, predictions, successful)
             else:
                 temp_predictions = []
             # End if len(temp_predictions)
@@ -264,7 +266,7 @@ def mandatory_values(grid, predictions, successful):
             if len(temp_predictions) == 1:
                 grid[y][x] = [temp_predictions[0], 1]
                 predictions = predictions=[[[] for i in range(9)] for j in range(9)]
-                grid, predictions = mandatory_values(grid, predictions)
+                grid, predictions, successful = mandatory_values(grid, predictions, successful)
             else:
                 temp_predictions = []
             # End if len(temp_predictions)
@@ -275,12 +277,10 @@ def mandatory_values(grid, predictions, successful):
     
     # If any predicted number only appears once in a row or column, permanently set it
     grid, predictions, successful = mandatory_predictions(grid, predictions, successful, 'row')
-    temp_predictions = []
     
     # Check column, skip if all mandatory values saved
     if not successful:
-        grid, predictions, successful = mandatory_predictions(grid, predictions, successful, 'column')
-        temp_predictions = []        
+        grid, predictions, successful = mandatory_predictions(grid, predictions, successful, 'column')    
     # End if not successful
     
     return [grid, predictions, True]
