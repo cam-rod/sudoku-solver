@@ -1,5 +1,5 @@
 # Cameron Rodriguez
-# April 8, 2019
+# Date
 # This program will dynamically solve a sudoku grid.
 
 Initialize grid and predictions as a 3D array, with 9 empty elements within each of 9 empty elements
@@ -117,7 +117,7 @@ Define fill_grid(grid, predictions)
     
     Return [True, grid]
 
-Define deliver_result(successful, *grid_location)
+Define deliver_result()
     If successful is True
         Set grid_location to grid_location[:-4]+'_solution'+grid_location[-4:]
         Open the file at grid_location in 'w' mode as solution_grid
@@ -140,9 +140,9 @@ Define deliver_result(successful, *grid_location)
 
     Else print 'The sudoku puzzle inputted cannot be solved.'
 
-Set grid_location, grid to the returned value of load_grid()
-
+Set grid to the returned value of load_grid()
 If grid is False, call deliver_result(False)
+Else set grid_location to grid[0] and grid to grid[1]
 
 Set grid, predictions to the returned value of mandatory_values(grid)
 Set result to the returned value of fill_grid(grid, predictions)
