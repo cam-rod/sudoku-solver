@@ -165,7 +165,7 @@ def mandatory_predictions(grid, predictions, successful, form):
             # End if form
         # End for j
         
-        # Chedck if a number is only predicted once in row/column, and add if so
+        # Check if a number is only predicted once in row/column, and add if so
         temp_predictions = ''.join(temp_predictions)     
         for k in range(1, 10):
             if len(re.findall(k, temp_predictions)) == 1:
@@ -346,7 +346,8 @@ else:
 # End if grid
 
 # Fill in spaces that cannot have other values
-grid, predictions = mandatory_values(grid, predictions, successful)
+grid, predictions, successful = mandatory_values(grid, predictions, successful)
+successful = False
 
 # Fill in all other spaces
 result = fill_grid(grid, predictions)
