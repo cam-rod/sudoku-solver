@@ -11,6 +11,8 @@ result:  LIST: stores returned value of fill_grid() with confirmation of puzzle 
 y: INT: indicates the row the program is checking from the top
 x: INT: indicates the column the program is checking from the left
 grid_location: STR: contains the user inputted location of the game data
+end_screen: CLASS: calls the endgame class
+root: CLASS: contains the tkinter frame
 
 values: LIST: a list of values found in the same 3x3 grid, row, or column as grid[y][x]
 inner_y: INT: indicates the row of grid[y][x] relative to its 3x3 grid
@@ -23,6 +25,7 @@ final_grid: LIST: stores a boolean if the puzzle has been successfully solved, a
 """
 
 import re # Used to verify the puzzle as valid
+import Tkinter as tk # Used to generate graphical output
 
 # Loads empty 3D arrays with 9 lists within 9 lists
 grid = [[[] for i in range(9)] for j in range(9)]
@@ -34,6 +37,8 @@ y = 0
 x = 0
 grid_location = ''
 successful = False
+end_screen = None
+root = tk.Tk()
 
 # This function returns the value of the 8 other spaces in the same 3x3 inner grid as the indicated character
 # region: STR: indicates whether to get values of a grid, row, or column
@@ -332,15 +337,65 @@ def fill_grid(grid, predictions):
     return [True, grid]
 # End fill_grid
 
-# This function uses variable successful to either display a solved puzzle and save it, or deliver an error message
-def deliver_result():
-    pass
+# This class creates a Tkinter window to either display a solved puzzle and save it, or deliver an error message
+# tk.Frame: CLASS: provides the Tkinter frame to the class
+class DeliverResult(tk.Frame):
+    # This function imports variables into the class and initializes the Tkinter window
+    # grid: LIST: the 3D array storing the sudoku puzzle
+    # grid_location: STR: contains the user inputted location of the game data
+    # successful: BOOL: indicates if the puzzle was solved successfully
+    def __init__(self, grid, grid_location, successful, master=None):
+        self.grid = grid
+        self.grid_location = grid_location
+        self.successful = successful
+
+        # Initialize window
+        self.create_window()
+    # End __init__
+
+    # This function creates the window to display the result, varying based on whether the puzzle was solved.
+    def create_window(self):
+        root.configure(bg='black')
+        if self.successful:
+            # Save the solution file in the same location as the initial file
+            self.grid_location = self.grid_location[:-4] + '_solution.txt'
+            with open(self.grid_location, 'w') as grid_raw:
+                for y in len(self.grid):
+                    for x in len(self.grid[y]):
+                        grid_raw.write('{}'.format(self.grid[y][x][0]))
+                    # End for x
+                    if y <> 8:
+                        grid_raw.write('\n')
+                    # End if y
+                # End for y
+            # End with open(self.grid_location)
+
+            # Create a window with a grid of the solution and a message on the location of the file
+            self.master.title('Solution')
+            for y in len(self.grid):
+                for x in len(self.grid[x]):
+                    tk.Label(text = '{}'.format(str(self.grid[y][x][0])), bg='black', fg='white', justify='center',
+                             width=1).grid(column = x, row = y, sticky='NSEW')
+                # End for x
+            # End for y
+
+            tk.Label(text = 'The solution file is saved at {}.'.format(self.grid_location), wrap='word',
+                     fg='white', bg='black', justify='center', anchor='center', height=2).grid(column=0,
+                     columnspan=9, row=9)
+            tk.Button(text = 'Ok', command = root.destroy).grid(column=4, row=10, sticky='NSEW')
+        else:
+            # Create a window telling the user that the puzzle cannot be solved
+            self.master.title('Invalid Puzzle')
+            tk.Label(text='This sudoku puzzle cannot be solved.', width=36, bg='black', fg='white',
+                     justify='center').grid(column=0, row=0, sticky='NSEW')
+            tk.Button(text = 'Ok', command = root.destroy, anchor='center').grid(column=4, row=10)
 
 # Request and load the puzzle into the solver
 grid = load_grid()
 
 if grid == False:
-    deliver_result()
+    end_screen = DeliverResult(grid, grid_location, successful, master=root)
+    end_screen.mainloop()
 else:
     grid_location, grid = grid
 # End if grid
@@ -357,4 +412,5 @@ if result[0] == True:
     successful, grid = result
 # End if result[0]
 
-deliver_result()
+end_screen = DeliverResult(grid, grid_location, successful, master=root)
+end_screen.mainloop()

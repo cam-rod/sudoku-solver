@@ -117,7 +117,9 @@ Define fill_grid(grid, predictions)
     
     Return [True, grid]
 
-Define deliver_result()
+Define class deliver_result()
+    Initialize a centered Tkinter window as result
+    
     If successful is True
         Set grid_location to grid_location[:-4]+'_solution'+grid_location[-4:]
         Open the file at grid_location in 'w' mode as solution_grid
