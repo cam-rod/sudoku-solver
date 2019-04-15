@@ -94,7 +94,7 @@ def check(region, y, x, grid):
 # Returns a list of the location of the file and the grid
 def load_grid():
     grid_text = []
-    grid_location = input('Please enter the location of the sudoku puzzle to solve: ')
+    grid_location = raw_input('Please enter the location of the sudoku puzzle to solve: ')
 
     with open(grid_location, 'r') as grid_raw:
         grid_text = grid_raw.read().splitlines()
@@ -349,12 +349,16 @@ class DeliverResult(tk.Frame):
         self.successful = successful
 
         # Initialize window
+        tk.Frame.__init__(self, master)
         self.create_window()
     # End __init__
 
     # This function creates the window to display the result, varying based on whether the puzzle was solved.
     def create_window(self):
         root.configure(bg='black')
+        root.lift()
+        tk.Toplevel(self).attributes('-topmost', 'true')
+        root.wm_iconbitmap('icon.ico')        
         if self.successful:
             # Save the solution file in the same location as the initial file
             self.grid_location = self.grid_location[:-4] + '_solution.txt'
@@ -387,7 +391,7 @@ class DeliverResult(tk.Frame):
             self.master.title('Invalid Puzzle')
             tk.Label(text='This sudoku puzzle cannot be solved.', width=36, bg='black', fg='white',
                      justify='center').grid(column=0, row=0, sticky='NSEW')
-            tk.Button(text = 'Ok', command = root.destroy, anchor='center').grid(column=4, row=10)
+            tk.Button(text = 'Ok', command = root.destroy, anchor='center').grid(row=1)
 
 # Request and load the puzzle into the solver
 grid = load_grid()
