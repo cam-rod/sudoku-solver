@@ -170,10 +170,9 @@ def mandatory_predictions(grid, predictions, successful, form):
             # End if form
         # End for j
         
-        # Check if a number is only predicted once in row/column, and add if so
-        temp_predictions = ''.join(temp_predictions)     
+        # Check if a number is only predicted once in row/column, and add if so     
         for k in range(1, 10):
-            if len(re.findall(k, temp_predictions)) == 1:
+            if temp_predictions.count(k) == 1:
                 for j in range(9):
                     if form =='row':
                         for l in predictions[i][j]:
