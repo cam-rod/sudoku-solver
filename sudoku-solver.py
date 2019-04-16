@@ -58,21 +58,21 @@ def check(region, y, x, grid):
         if inner_y == 0 and inner_x == 0: # Top left position
             values = [grid[y+1][x][0], grid[y+2][x][0], grid[y][x+1][0], grid[y+1][x+1][0], grid[y+2][x+1][0], grid[y][x+2][0], grid[y+1][x+2][0], grid[y+2][x+2][0]]
         elif inner_y == 0 and inner_x == 1: # Top centre position
-            values = [grid[y][x-1], grid[y+1][x-1][0], grid[y+2][x-1][0], grid[y+1][x][0], grid[y+2][x][0], grid[y][x+1][0], grid[y+1][x+2][0], grid[y+2][x+2][0]]
+            values = [grid[y][x-1][0], grid[y+1][x-1][0], grid[y+2][x-1][0], grid[y+1][x][0], grid[y+2][x][0], grid[y][x+1][0], grid[y+1][x+1][0], grid[y+2][x+1][0]]
         elif inner_y == 0 and inner_x == 2: # Top right position
             values = [grid[y][x-2][0], grid[y+1][x-2][0], grid[y+2][x-2][0], grid[y][x-1][0], grid[y+1][x-1][0], grid[y+2][x-1][0], grid[y+1][x][0], grid[y+2][x][0]]
         elif inner_y == 1 and inner_x == 0: # Centre left position
-            values = [grid[y-1][x], grid[y+1][x][0], grid[y-1][x+1][0], grid[y][x+1][0], grid[y+1][x+1][0], grid[y-1][x+2][0], grid[y][x+2][0], grid[y+1][x+2][0]]
+            values = [grid[y-1][x][0], grid[y+1][x][0], grid[y-1][x+1][0], grid[y][x+1][0], grid[y+1][x+1][0], grid[y-1][x+2][0], grid[y][x+2][0], grid[y+1][x+2][0]]
         elif inner_y == 1 and inner_x == 1: # Centre centre position
-            values = [grid[y-1][x-1], grid[y][x-1][0], grid[y+1][x-1][0], grid[y-1][x][0], grid[y+1][x][0], grid[y-1][x+1][0], grid[y][x+1][0], grid[y+1][x+1][0]]
+            values = [grid[y-1][x-1][0], grid[y][x-1][0], grid[y+1][x-1][0], grid[y-1][x][0], grid[y+1][x][0], grid[y-1][x+1][0], grid[y][x+1][0], grid[y+1][x+1][0]]
         elif inner_y == 1 and inner_x == 2: # Centre right position
-            values = [grid[y-1][x-2], grid[y][x-2][0], grid[y+1][x-2][0], grid[y-1][x-1][0], grid[y][x-1][0], grid[y+1][x-1][0], grid[y-1][x][0], grid[y+1][x][0]]
+            values = [grid[y-1][x-2][0], grid[y][x-2][0], grid[y+1][x-2][0], grid[y-1][x-1][0], grid[y][x-1][0], grid[y+1][x-1][0], grid[y-1][x][0], grid[y+1][x][0]]
         elif inner_y == 2 and inner_x == 0: # Bottom left position
-            values = [grid[y-2][x], grid[y-1][x][0], grid[y-2][x+1][0], grid[y-1][x+1][0], grid[y][x+1][0], grid[y-2][x+2][0], grid[y-1][x+2][0], grid[y][x+2][0]]
+            values = [grid[y-2][x][0], grid[y-1][x][0], grid[y-2][x+1][0], grid[y-1][x+1][0], grid[y][x+1][0], grid[y-2][x+2][0], grid[y-1][x+2][0], grid[y][x+2][0]]
         elif inner_y == 2 and inner_x == 1: # Bottom centre position
-            values = [grid[y-2][x-1], grid[y-1][x-1][0], grid[y][x-1][0], grid[y-2][x][0], grid[y-1][x][0], grid[y-2][x+1][0], grid[y-1][x+1][0], grid[y][x+1][0]]
+            values = [grid[y-2][x-1][0], grid[y-1][x-1][0], grid[y][x-1][0], grid[y-2][x][0], grid[y-1][x][0], grid[y-2][x+1][0], grid[y-1][x+1][0], grid[y][x+1][0]]
         elif inner_y == 2 and inner_x == 2: # Bottom right position
-            values = [grid[y-2][x-2], grid[y-1][x-2][0], grid[y][x-2][0], grid[y-2][x-1][0], grid[y-1][x-1][0], grid[y][x-1][0], grid[y-2][x][0], grid[y-1][x][0]]
+            values = [grid[y-2][x-2][0], grid[y-1][x-2][0], grid[y][x-2][0], grid[y-2][x-1][0], grid[y-1][x-1][0], grid[y][x-1][0], grid[y-2][x][0], grid[y-1][x][0]]
         # End if inner_y
         
         return values
@@ -101,7 +101,7 @@ def load_grid():
     # End with open
     
     # Check for 9 rows, 9 columns, and not all zeroes
-    if len(grid_text) == 9:
+    if len(grid_text) <> 9:
         return False
     # End if len(grid_text)
     for i in grid_text:
@@ -114,8 +114,8 @@ def load_grid():
     # End if not re.search
 
     # Transfer grid_text to grid
-    for y in len(grid):
-        for x in len(grid[y]):
+    for y in range(len(grid)):
+        for x in range(len(grid[y])):
             grid[y][x].append(int(grid_text[y][x]))
             
             # Append 1 if the number is permanent or 0 if the number is not
@@ -128,8 +128,8 @@ def load_grid():
     # End for y
     
     # Check if any numbers are repeated in rows, columns, or 3x3 grids
-    for y in len(grid):
-        for x in len(grid[y]):
+    for y in range(len(grid)):
+        for x in range(len(grid[y])):
             if grid[y][x][0] is 0:
                 continue
             # End if grid[y][x][0]
@@ -225,8 +225,8 @@ def mandatory_values(grid, predictions, successful):
     temp_predictions = []
     
     # Check if any row/column/3x3 grid is only missing one number, and insert it permanently if so
-    for y in len(grid):
-        for x in len(grid[y]):
+    for y in range(len(grid)):
+        for x in range(len(grid[y])):
             # Check row
             values = check('row', y, x, grid)
             for i in range(1, 10):
@@ -299,8 +299,8 @@ def mandatory_values(grid, predictions, successful):
 def fill_grid(grid, predictions):
     final_grid = []
     
-    for y in len(grid):
-        for x in len(grid[y]):
+    for y in range(len(grid)):
+        for x in range(len(grid[y])):
             # Skip if permanent number or previously guesses
             if grid[y][x][1] == 1 or grid[y][x][0] <> 0:
                 continue
@@ -355,16 +355,16 @@ class DeliverResult(tk.Frame):
 
     # This function creates the window to display the result, varying based on whether the puzzle was solved.
     def create_window(self):
-        root.configure(bg='black')
         root.lift()
+        root.configure(bg='white')
         root.wm_attributes('-topmost', 'true')
         root.wm_iconbitmap('icon.ico')        
         if self.successful:
             # Save the solution file in the same location as the initial file
             self.grid_location = self.grid_location[:-4] + '_solution.txt'
             with open(self.grid_location, 'w') as grid_raw:
-                for y in len(self.grid):
-                    for x in len(self.grid[y]):
+                for y in range(len(self.grid)):
+                    for x in range(len(self.grid[y])):
                         grid_raw.write('{}'.format(self.grid[y][x][0]))
                     # End for x
                     if y <> 8:
@@ -375,21 +375,21 @@ class DeliverResult(tk.Frame):
 
             # Create a window with a grid of the solution and a message on the location of the file
             self.master.title('Solution')
-            for y in len(self.grid):
-                for x in len(self.grid[x]):
-                    tk.Label(text = '{}'.format(str(self.grid[y][x][0])), bg='black', fg='white', justify='center',
-                             width=1).grid(column = x, row = y, sticky='NSEW')
+            for y in range(len(self.grid)):
+                for x in range(len(self.grid[x])):
+                    tk.Label(text = '{}'.format(str(self.grid[y][x][0])), justify='center', width=1, bg='white',
+                             borderwidth=1, relief='solid').grid(column = x, row = y, sticky='NSEW')
                 # End for x
             # End for y
 
-            tk.Label(text = 'The solution file is saved at {}.'.format(self.grid_location), wrap='word',
-                     fg='white', bg='black', justify='center', anchor='center', height=2).grid(column=0,
+            tk.Label(text = 'The solution file is saved at {}.'.format(self.grid_location), wraplength=200,
+                     justify='center', anchor='center', height=6, bg='white').grid(column=0,
                      columnspan=9, row=9)
-            tk.Button(text = 'Ok', command = root.destroy).grid(column=4, row=10, sticky='NSEW')
+            tk.Button(text = 'Ok', command = root.destroy).grid(column=10, row=9)
         else:
             # Create a window telling the user that the puzzle cannot be solved
             self.master.title('Invalid Puzzle')
-            tk.Label(text='This sudoku puzzle cannot be solved.', width=36, bg='black', fg='white',
+            tk.Label(text='This sudoku puzzle cannot be solved.', width=36, bg='white',
                      justify='center').grid(column=0, row=0, sticky='NSEW')
             tk.Button(text = 'Ok', command = root.destroy, anchor='center').grid(row=1)
 
@@ -402,20 +402,20 @@ if grid == False:
     end_screen.mainloop()
 else:
     grid_location, grid = grid
+
+    # Fill in spaces that cannot have other values
+    grid, predictions, successful = mandatory_values(grid, predictions, successful)
+    successful = False
+    
+    # Fill in all other spaces
+    result = fill_grid(grid, predictions)
+    
+    # Deliver solution or failure message
+    if result[0] == True:
+        successful, grid = result
+    # End if result[0]
+    
+    root = tk.Tk()
+    end_screen = DeliverResult(grid, grid_location, successful, master=root)
+    end_screen.mainloop()
 # End if grid
-
-# Fill in spaces that cannot have other values
-grid, predictions, successful = mandatory_values(grid, predictions, successful)
-successful = False
-
-# Fill in all other spaces
-result = fill_grid(grid, predictions)
-
-# Deliver solution or failure message
-if result[0] == True:
-    successful, grid = result
-# End if result[0]
-
-root = tk.Tk()
-end_screen = DeliverResult(grid, grid_location, successful, master=root)
-end_screen.mainloop()
