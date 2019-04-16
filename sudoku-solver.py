@@ -38,7 +38,7 @@ x = 0
 grid_location = ''
 successful = False
 end_screen = None
-root = tk.Tk()
+root = None
 
 # This function returns the value of the 8 other spaces in the same 3x3 inner grid as the indicated character
 # region: STR: indicates whether to get values of a grid, row, or column
@@ -357,7 +357,7 @@ class DeliverResult(tk.Frame):
     def create_window(self):
         root.configure(bg='black')
         root.lift()
-        tk.Toplevel(self).attributes('-topmost', 'true')
+        root.wm_attributes('-topmost', 'true')
         root.wm_iconbitmap('icon.ico')        
         if self.successful:
             # Save the solution file in the same location as the initial file
@@ -397,6 +397,7 @@ class DeliverResult(tk.Frame):
 grid = load_grid()
 
 if grid == False:
+    root = tk.Tk()
     end_screen = DeliverResult(grid, grid_location, successful, master=root)
     end_screen.mainloop()
 else:
@@ -415,5 +416,6 @@ if result[0] == True:
     successful, grid = result
 # End if result[0]
 
+root = tk.Tk()
 end_screen = DeliverResult(grid, grid_location, successful, master=root)
 end_screen.mainloop()
