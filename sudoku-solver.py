@@ -21,6 +21,7 @@ grid_raw: FILE: the opened file of the source puzzle
 grid_text: LIST: list of sudoku puzzle rows
 temp_predictions: LIST: temporarily stores a list of all values not found in a row/column/3x3 inner grid
 successful: BOOL: indicates if all mandatory values in rows/column are saved, or if puzzle was successfully solved
+updated: BOOL: indicates if any values have been added due to being the only missing spot in a line
 final_grid: LIST: stores a boolean if the puzzle has been successfully solved, and the grid itself if True
 """
 
@@ -231,6 +232,7 @@ def mandatory_predictions(grid, predictions, successful, form):
 # Returns a list containing the updated grid, predictions, and a True boolean
 def mandatory_values(grid, predictions, successful):
     temp_predictions = []
+    updated = False
     
     # Check if any row/column/3x3 grid is only missing one number, and insert it permanently if so
     for y in range(len(grid)):
@@ -245,9 +247,10 @@ def mandatory_values(grid, predictions, successful):
             # End for i
             
             if len(temp_predictions) == 1:
-                grid[y][x] = [temp_predictions[0], 1]
-                predictions = predictions=[[[] for i in range(9)] for j in range(9)]
-                grid, predictions, successful = mandatory_values(grid, predictions, successful)
+                if grid[y][x][1] <> 1:
+                    grid[y][x] = [temp_predictions[0], 1]
+                    updated = True
+                # End if grid[y][x][1]
             # End if len(temp_predictions)
             temp_predictions = []
             
@@ -260,9 +263,10 @@ def mandatory_values(grid, predictions, successful):
             # End for i
             
             if len(temp_predictions) == 1:
-                grid[y][x] = [temp_predictions[0], 1]
-                predictions = predictions=[[[] for i in range(9)] for j in range(9)]
-                grid, predictions, successful = mandatory_values(grid, predictions, successful)
+                if grid[y][x][1] <> 1:
+                    grid[y][x] = [temp_predictions[0], 1]
+                    updated = True
+                # End if grid[y][x][1]
             elif len(temp_predictions) > 1:
                 # Remove any predictions that cannot also exist in the column in reverse order
                 for i in range(len(predictions[y][x])-1, -1, -1):
@@ -282,9 +286,10 @@ def mandatory_values(grid, predictions, successful):
             # End for i
             
             if len(temp_predictions) == 1:
-                grid[y][x] = [temp_predictions[0], 1]
-                predictions = predictions=[[[] for i in range(9)] for j in range(9)]
-                grid, predictions, successful = mandatory_values(grid, predictions, successful)
+                if grid[y][x][1] <> 1:
+                    grid[y][x] = [temp_predictions[0], 1]
+                    updated = True
+                # End if grid[y][x][1]
             elif len(temp_predictions) > 1:
                 # Remove any predictions that cannot also exist in the 3x3 grid in reverse order
                 for i in range(len(predictions[y][x])-1, -1, -1):
@@ -296,6 +301,10 @@ def mandatory_values(grid, predictions, successful):
             temp_predictions = []
         # End for x
     # End for y
+    
+    if updated:
+        predictions = [[[] for i in range(9)] for j in range(9)]
+        grid, predictions, successful = mandatory_values(grid, predictions, successful)    
     
     # If any predicted number only appears once in a row or column, permanently set it
     grid, predictions, successful = mandatory_predictions(grid, predictions, successful, 'row')
