@@ -154,9 +154,9 @@ def load_grid():
 # form: STR: indicates whether to check rows or columns
 # Returns a list containing the updated grid, predictions, and successful
 def mandatory_predictions(grid, predictions, successful, form):
-    temp_predictions = []
-
     for i in range(9):
+        temp_predictions = []
+        
         # Add all predictions to a list
         for j in range(9):
             if form == 'row':
@@ -181,9 +181,11 @@ def mandatory_predictions(grid, predictions, successful, form):
                     if form =='row':
                         for l in predictions[i][j]:
                             if l == k:
-                                grid[i][j] = [k, 1]
-                                predictions = [[[] for a in range(9)] for b in range(9)]
-                                grid, predictions, successful = mandatory_values(grid, predictions, successful)
+                                if grid[i][j][1] <> 1:
+                                    grid[i][j] = [k, 1]
+                                    predictions = [[[] for a in range(9)] for b in range(9)]
+                                    grid, predictions, successful = mandatory_values(grid, predictions, successful)
+                                # End if predictions[i][j][1]
                             # End if l
                             if successful:
                                 break
@@ -195,9 +197,11 @@ def mandatory_predictions(grid, predictions, successful, form):
                     else:
                         for l in predictions[j][i]:
                             if l == k:
-                                grid[j][i] = [k, 1]
-                                predictions = [[[] for a in range(9)] for b in range(9)]
-                                grid, predictions, successful = mandatory_values(grid, predictions, successful)
+                                if grid[j][i][1] <> 1:
+                                    grid[j][i] = [k, 1]
+                                    predictions = [[[] for a in range(9)] for b in range(9)]
+                                    grid, predictions, successful = mandatory_values(grid, predictions, successful)
+                                # End if predictions[j][i][1]
                             # End if l
                             if successful:
                                 break
