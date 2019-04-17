@@ -79,12 +79,12 @@ def check(region, y, x, grid):
 
     elif region is 'row':
         # Retrieve all values in the same row and delete the current spot
-        values = [grid[y][i] for i in range(9)]
+        values = [grid[y][i][0] for i in range(9)]
         del values[x]
         return values
     else:
         # Retrieve all values in the same column and delete the current spot
-        values = [grid[i][x] for i in range(9)]
+        values = [grid[i][x][0] for i in range(9)]
         del values[y]
         return values
     # End if region
@@ -161,11 +161,15 @@ def mandatory_predictions(grid, predictions, successful, form):
         for j in range(9):
             if form == 'row':
                 for k in predictions[i][j]:
-                    temp_predictions.append(k)
+                    if grid[i][j][1] <> 1:
+                        temp_predictions.append(k)
+                    # End if grid[i][j][1]
                 # End for k
             else:
                 for k in predictions[j][i]:
-                    temp_predictions.append(k)
+                    if grid[j][i][1] <> 1:
+                        temp_predictions.append(k)
+                    # End if grid[j][i][1]
                 # End for k
             # End if form
         # End for j
@@ -178,8 +182,8 @@ def mandatory_predictions(grid, predictions, successful, form):
                         for l in predictions[i][j]:
                             if l == k:
                                 grid[i][j] = [k, 1]
-                                predictions = predictions=[[[] for a in range(9)] for b in range(9)]
-                                grid, predictions, successful= mandatory_values(grid, predictions, successful)
+                                predictions = [[[] for a in range(9)] for b in range(9)]
+                                grid, predictions, successful = mandatory_values(grid, predictions, successful)
                             # End if l
                             if successful:
                                 break
@@ -192,8 +196,8 @@ def mandatory_predictions(grid, predictions, successful, form):
                         for l in predictions[j][i]:
                             if l == k:
                                 grid[j][i] = [k, 1]
-                                predictions = predictions=[[[] for a in range(9)] for b in range(9)]
-                                grid, predictions, successful= mandatory_values(grid, predictions, successful)
+                                predictions = [[[] for a in range(9)] for b in range(9)]
+                                grid, predictions, successful = mandatory_values(grid, predictions, successful)
                             # End if l
                             if successful:
                                 break
@@ -240,16 +244,14 @@ def mandatory_values(grid, predictions, successful):
                 grid[y][x] = [temp_predictions[0], 1]
                 predictions = predictions=[[[] for i in range(9)] for j in range(9)]
                 grid, predictions, successful = mandatory_values(grid, predictions, successful)
-            else:
-                temp_predictions = []
             # End if len(temp_predictions)
+            temp_predictions = []
             
             # Check column
             values = check('column', y, x, grid)
             for i in range(1, 10):
                 if i not in values:
                     temp_predictions.append(i)
-                    predictions[y][x].append(i)
                 # End if i
             # End for i
             
@@ -257,16 +259,21 @@ def mandatory_values(grid, predictions, successful):
                 grid[y][x] = [temp_predictions[0], 1]
                 predictions = predictions=[[[] for i in range(9)] for j in range(9)]
                 grid, predictions, successful = mandatory_values(grid, predictions, successful)
-            else:
-                temp_predictions = []
+            elif len(temp_predictions) > 1:
+                # Remove any predictions that cannot also exist in the column in reverse order
+                for i in range(len(predictions[y][x])-1, -1, -1):
+                    if predictions[y][x][i] not in temp_predictions:
+                        del predictions[y][x][i]
+                    # End if i
+                # End for i
             # End if len(temp_predictions)
+            temp_predictions = []
             
             # Check 3x3 grid
             values = check('3x3', y, x, grid)
             for i in range(1, 10):
                 if i not in values:
                     temp_predictions.append(i)
-                    predictions[y][x].append(i)
                 # End if i
             # End for i
             
@@ -274,11 +281,15 @@ def mandatory_values(grid, predictions, successful):
                 grid[y][x] = [temp_predictions[0], 1]
                 predictions = predictions=[[[] for i in range(9)] for j in range(9)]
                 grid, predictions, successful = mandatory_values(grid, predictions, successful)
-            else:
-                temp_predictions = []
+            elif len(temp_predictions) > 1:
+                # Remove any predictions that cannot also exist in the 3x3 grid in reverse order
+                for i in range(len(predictions[y][x])-1, -1, -1):
+                    if predictions[y][x][i] not in temp_predictions:
+                        del predictions[y][x][i]
+                    # End if i
+                # End for i
             # End if len(temp_predictions)
-            
-            predictions[y][x] = list(set(predictions[y][x])) # Remove duplicate predictions
+            temp_predictions = []
         # End for x
     # End for y
     
