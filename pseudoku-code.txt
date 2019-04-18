@@ -4,87 +4,37 @@
 
 Initialize grid and predictions as a 3D array, with 9 empty elements within each of 9 empty elements
 Initialize temp_predictions, result, and values as arrays
-Initialize y and x as integers
-Initialize grid_location as a string
+Initialize y and x as integers; grid locations as a string; successful as False; end_screen and root as None
 
 Define function check(region, y, x, grid)
     Initialize inner_x and inner_y as integers
     
-    If region is '3x3'
-        Calculate inner_y as y % 3
-        Calculate inner_x as x % 3
-
-        If inner_y is 0 and inner_x is 0, append the values of grid spaces up to 2 spaces down and 2 spaces right to values
-        Else if inner_y is 0 and inner_x is 1, append the values of grid spaces up to 2 spaces down and 1 space left and right to values
-        Else if inner_y is 0 and inner_x is 2, append the values of grid spaces up to 2 spaces down and 2 spaces left to values
-        Else if inner_y is 1 and inner_x is 0, append the values of grid spaces up to 1 space up and down and 2 spaces right to values
-        Else if inner_y is 1 and inner_x is 1, append the values of grid spaces up to 1 space up and down and 1 space left and right to values
-        Else if inner_y is 1 and inner_x is 2, append the values of grid spaces up to 1 space up and down and 2 spaces left to values
-        Else if inner_y is 2 and inner_x is 0, append the values of grid spaces up to 2 spaces up and 2 spaces right to values
-        Else if inner_y is 2 and inner_x is 1, append the values of grid spaces up to 2 spaces up and 1 space left and right to values
-        Else if inner_y is 2 and inner_x is 2, append the values of grid spaces up to 2 spaces up and 2 spaces left to values
-
-        Return values
-
-    If region is 'row'
-        Append all numbers in the row to values
-        Remove values[x]
-        Return values
-
-    If region is 'column'
-        Append all numbers in the column to values
-        Remove values[y]
-        Return values
+    If region is '3x3' , set values to a list of all other spaces in the grid by using modulo to find the relative position of the current space within it
+    If region is 'row', set values to a list of all spaces in the same row, and then remove the current spot
+    If region is 'column', set values to a list of all spaces in the same row, and then remove the current spot
+    
+    Return values
 
 Define function load_grid()
     Initialize grid_text as an array
+    Request for file_location, then open the file, and read and split lines into grid_text
 
-    Request the filename from the user as grid_location
-    Open the file from grid_location in "r" mode as grid_raw
-    Read grid_raw, split at newline characters, into the array grid_text
-    Close grid_raw
-
-    If the length of grid_text is not 9, return False
-    If the length of each line of grid_text is not 9, return False
-    If all characters in grid_text are 0, return False
-
-    Split grid_text by characters into the 3D array grid
-
-    For y in length of grid
-        For x in length of grid[y] 
-            Append 1 to grid[y][x] if grid[y][x][0] is a non-zero number, or append 0 if it is zero, or return 'invalid' if it is not a number
+    Return False if there are not 9 rows, 9 columns, or if all spaces are 0
+    Split each space of grid_text into an element of grid, then append 1 if the space is prefilled or 0 otherwise
+    For each space, return False if a number is repeated in a row, column, or 3x3 grid by using check()
     
-    For y in length of grid
-        For x in length of grid[y]
-            return False if the value of grid[y][x][0] appears in the same row or column, unless the value is 0
-            return False if the value of grid[y][x][0] appears in the 3x3 grid list returned by check('grid', y, x, grid)
-
     Return [grid_location, grid]
 
-Define mandatory_predictions(grid, predictions, successful, form)
-    Append the predictions of each element of the row/column to temp_predictions (decided by type)
-    If any non-zero number appears once in temp_predictions, find the spot in grid and set it permanently to that value, reset predictions, and run recursion on mandatory_values(grid, predictions)
-    Else continue
-    Break program if successful is True
+Define mandatory_predictions(grid, predictions, successful, form)    
+    For each row/column as defined by form, initialize temp_predictions as an array and append the predictions of each non-permanent space in the row/column to temp_predictions
+    If any non-zero number appears once in temp_predictions, find the space
+    If the space is not a permanent number, permanently set that number, clear predictions and run mandatory_values()
     
-    return [grid, predictions, successful]
+    Break loops at any point if successful is True
+    Return [grid, predictions, successful]
 
 Define mandatory_values(grid, predictions, successful)
-    For y in length of grid
-        For x in length of grid[y]
-            Append any non-zero value not found in the same row to temp_predictions and to predictions[y][x]
-            If there is one number in temp_predictions, set that value permanently to grid[y][x], reset predictions, and run recursion on mandatory_values(grid, predictions)
-            Else clear temp_predictions
-            
-            Append any non-zero value not found in the same column to temp_predictions and to predictions[y][x]
-            If there is one number in temp_predictions, set that value permanently to grid[y][x], reset predictions, and run recursion on mandatory_values(grid, predictions)
-            Else clear temp_predictions
-            
-            Append any non-zero value not found in the 3x3 grid from check('grid', y, x, grid) to temp_predictions and to predictions[y][x]
-            If there is one number in temp_predictions, set that value permanently to grid[y][x], reset predictions, and run recursion on mandatory_values(grid, predictions)
-            Else clear temp_predictions
-
-            Remove duplicates with set(predictions[y][x])
+    Initialize temp_predictions as an array; updated as False
       
     For each row in grid
         Call mandatory_predictions(grid, predictions, successful, 'row')
