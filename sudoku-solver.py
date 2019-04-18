@@ -352,6 +352,7 @@ def fill_grid(grid, predictions):
             # End for i
             
             # Returns False if the program cannot successfully enter a value
+            grid[y][x][0] = 0
             return [False]
         # End for x
     # End for y
@@ -382,7 +383,11 @@ class DeliverResult(tk.Frame):
         root.lift()
         root.configure(bg='white')
         root.wm_attributes('-topmost', 'true')
-        root.wm_iconbitmap('icon.ico')        
+        try:
+            root.wm_iconbitmap('icon.ico')        
+        except tk.TclError:
+            pass
+        # End try/except
         if self.successful:
             # Save the solution file in the same location as the initial file
             self.grid_location = self.grid_location[:-4] + '_solution.txt'
