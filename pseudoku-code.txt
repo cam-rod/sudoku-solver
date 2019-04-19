@@ -2,6 +2,8 @@
 # Date
 # This program will dynamically solve a sudoku grid.
 
+Import re and tkinter as tk
+
 Initialize grid and predictions as a 3D array, with 9 empty elements within each of 9 empty elements
 Initialize temp_predictions, result, and values as arrays
 Initialize y and x as integers; grid locations as a string; successful as False; end_screen and root as None
@@ -27,77 +29,55 @@ Define function load_grid()
 
 Define mandatory_predictions(grid, predictions, successful, form)    
     For each row/column as defined by form, initialize temp_predictions as an array and append the predictions of each non-permanent space in the row/column to temp_predictions
-    If any non-zero number appears once in temp_predictions, find the space
-    If the space is not a permanent number, permanently set that number, clear predictions and run mandatory_values()
-    
-    Break loops at any point if successful is True
+        If any non-zero number appears once in temp_predictions, find the space
+            If the space is not a permanent number, permanently set that number, clear predictions and run mandatory_values()
+        Break loops at any point if successful is True
+
     Return [grid, predictions, successful]
 
 Define mandatory_values(grid, predictions, successful)
     Initialize temp_predictions as an array; updated as False
-      
-    For each row in grid
-        Call mandatory_predictions(grid, predictions, successful, 'row')
 
-    For each column in grid
-        Call mandatory_predictions(grid, predictions, successful, 'column')
+    For each spot in grid, add any number not found in the row to temp_predictions and predictions
+        If only one number is not found, permanently set grid to that number and updated to True
+        Repeat for columns and 3x3 grids, but if only one number is not found, clear predictions for that spot
+
+    If updated is true, clear all predictions and recursively call mandatory_values()
+          
+    Call mandatory_predictions('row')
+    If successful is not True, call mandatory_predictions('column')
     
     Return [grid, predictions, True]
 
 Define fill_grid(grid, predictions)
     Initialize final_grid as an array
 
-    For y in length of grid
-        For x in length of grid[y]
-            Continue if grid[y][x][0] is not 0
+    For each spot in grid, skip if the number is permanent
+        For each prediction for the spot, pass if it is already included in the row/column/3x3 grid using check()
+            Else set the spot to that prediction and run fill_grid() with the updated grid
+            If final_grid[0] is True, return final_grid
+        If no prediction works, set that spot to 0 and return [False]
 
-            For p in length of predictions[y][x]
-                If the value of grid[y][x][0] is repeated in the row, continue loop
-                If the value of grid[y][x][0] is repeated in the column, continue loop
-                If the value of grid[y][x][0] is repeated in its 3x3 surrounding grid as returned by check('grid', y, x, grid), continue loop
-                Set grid[y][x][0] to predictions[y][x][p]
-
-                
-                Set final_grid to the returned value of fill_grid(grid, predictions)
-
-                If final_grid[0] is True, return final_grid
-                Else continue
-            
-            Return [False]
-    
     Return [True, grid]
 
-Define class deliver_result()
-    Initialize a centered Tkinter window as result
+Define class DeliverResult(tk.Frame)
+    Define __init__(self, grid, grid_location, successful, master=None)
+        Set self.grid to grid, self.grid_location to grid_location, and self.successful to successful
+        Initialize tk.Frame and call self.create_window()
     
-    If successful is True
-        Set grid_location to grid_location[:-4]+'_solution'+grid_location[-4:]
-        Open the file at grid_location in 'w' mode as solution_grid
-        For y in length of grid
-            For x in length of grid[y]
-                Write the casted string of grid[y][x][0] to solution_grid
-            Write '\n' if y is not 8
-        
-        Close solution_grid
-
-        Initialize a centered Tkinter window as result
-
-        For y in length of grid
-            For x in length of grid[y]
-                Add a tkinter grid widget in column=x and row=y with string of grid[y][x][0] inside
-
-        Add a grid widget stretched across the bottom row with the text 'Solution saved to {}.'.format(grid_location)
-
-        Launch the window result
-
-    Else print 'The sudoku puzzle inputted cannot be solved.'
+    Define create_window(self):
+        Set the window to stay on top, with a white background and a sudoku grid as the logo
+        If successful is True, set self.grid_location to self.grid_location[:-4]+'_solution.txt', then save grid to that file location
+            Set the window title to 'Solution' and for each spot, center it in a Label its respective grid within the window, with a black border
+            Add a Label to the bottom indicating the save location of the file, and a button to the right that closes the window
+        If successful is false, set the window title to 'Invalid Solution'
+            Create a Label indicating the puzzle cannot be solved, and a button below to close the window
 
 Set grid to the returned value of load_grid()
-If grid is False, call deliver_result(False)
-Else set grid_location to grid[0] and grid to grid[1]
+If grid is False, set root to tk.Tk(), create an end_screen object for DeliverResult(), and run endscreen.mainloop()
+Else set grid_location and grid to the elements of grid
+    Set grid, predictions and successful to the returned value of mandatory_values(), then set successful to False
+    Set result to the returned value of fill_grid(grid, predictions)
+    If result[0] is True, set successful and grid to the elements of result
 
-Set grid, predictions to the returned value of mandatory_values(grid)
-Set result to the returned value of fill_grid(grid, predictions)
-
-If result[0] is True, set grid to result[1] and call deliver_result(True, grid_location)
-Else call deliver_result(False)
+    Create an end_screen object for DeliverResult(), and run endscreen.mainloop()
