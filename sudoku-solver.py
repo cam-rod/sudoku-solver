@@ -1,5 +1,5 @@
 # Cameron Rodriguez
-# Date
+# April 25, 2019
 # This program will dynamically solve a sudoku grid.
 
 """
